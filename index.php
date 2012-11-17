@@ -20,11 +20,11 @@ getRoute()->delete('/users/(\w+)', 'deleteUser'); //works :D
 getRoute()->post('/users/(\w+)/resetpassword', 'resetPassword'); //works :D 
 
 getRoute()->get('/groups', 'getGroups'); //works :D 
-getRoute()->post('/groups', 'createGroup');
+getRoute()->post('/groups', 'createGroup'); //works :D 
 getRoute()->get('/groups/(\w+)', 'getGroup'); //works :D 
 getRoute()->put('/groups/(\w+)', 'updateGroup');
-getRoute()->put('/groups/(\w+)/adduser', 'addUserToGroup');
-getRoute()->put('/groups/(\w+)/deleteUser', 'deleteUserFromGroup');
+getRoute()->post('/groups/(\w+)/adduser', 'addUserToGroup');
+getRoute()->post('/groups/(\w+)/deleteUser', 'deleteUserFromGroup');
 getRoute()->delete('/groups/(\w+)', 'deleteGroup'); //works :D 
 
 
@@ -217,6 +217,47 @@ function getGroups() {
   }
   
   echo json_encode($output);
+}
+
+function createGroup() {
+  global $con, $groupdn;
+  
+  requireAuthentication($con);
+  
+  header('Content-type: application/json');
+  
+  $input = json_decode(file_get_contents("php://input"), true);
+  $groupname = $input['name'];
+  
+  $search = ldap_search($con, $groupdn, "(cn=$groupname)");
+  if (ldap_count_entries($con, $search) != 0) {
+    header('HTTP/1.1 400 Bad Request');
+    echo '{"error": "Already Exists"}';
+    exit;
+  }
+  
+  $gidno = 10000;
+  foreach(getAllGroups($con) as $g) {
+      if ($g['gidnumber'][0] > $gidno) 
+          $gidno = $g['gidnumber'][0];
+  }
+  $gidno += 1;
+
+
+  $newgroup['objectclass'] = "posixGroup";
+  $newgroup['cn'] = $groupname;
+  $newgroup['userpassword'] = "{crypt}x";
+  $newgroup['gidnumber'] = $gidno;
+  
+  ldap_add($con, "cn=$groupname,ou=groups,dc=geeksoc,dc=org", $newgroup);
+  if (ldap_error($con) != "Success") {
+      header('HTTP/1.1 400 Bad Request');
+      echo '{"error": "'.ldap_error($con).'"}';
+      exit;
+  }
+  
+  ircNotify("Group created: $groupname");
+  
 }
 
 function getGroup($groupname) {

@@ -154,7 +154,7 @@
       return $password;
   }
   
-  function computeExpiry($date) {
+  function computeExpiry($date) { //not correct...
 	
     $nextExpiry = strtotime('first Friday of October', $date);
     $threshold = strtotime('last Friday of May', $date);
@@ -164,7 +164,7 @@
 	  } else {
 		 $expiry = strtotime('first Friday of October', $date + 365 * 24 * 60 * 60);
 	 }
-	
+   $expiry = $expiry/(24 * 60 * 60);
 	 return $expiry;        
   }
   
