@@ -17,13 +17,14 @@ getRoute()->post('/users/', 'createUser');
 getRoute()->get('/users/(\w+)', 'getUser'); //works :D
 getRoute()->put('/users/(\w+)', 'updateUser');
 getRoute()->delete('/users/(\w+)', 'deleteUser'); //works :D
-getRoute()->post('/users/(\w+)/resetpassword', 'resetPassword');
+getRoute()->post('/users/(\w+)/resetpassword', 'resetPassword'); //works :D 
 
 getRoute()->get('/groups/', 'getGroups'); //works :D 
 getRoute()->post('/groups/', 'createGroup');
 getRoute()->get('/groups/(\w+)', 'getGroup'); //works :D 
 getRoute()->put('/groups/(\w+)', 'updateGroup');
 getRoute()->delete('/groups/(\w+)', 'deleteGroup'); //works :D 
+
 
 //MySql stuff down here...
 getRoute()->get('/newmembers/', 'getNewMembers');
@@ -123,6 +124,40 @@ function deleteUser($username) {
   }
 
   ircNotify("Account deleted: $username");
+  
+}
+
+function resetPassword($username) {
+  global $con, $dn;
+  
+  requireAuthentication($con);
+  
+  header('Content-type: application/json');
+  
+  $search = ldap_search($con, $dn, "(uid=$username)");
+  exitIfNotFound($con, $search);
+  
+  $pass = generatePassword(); 
+  mt_srand((double)microtime()*1000000);
+  $salt = pack("CCCCCCCC", mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand());
+  $hashedpass = "{SSHA}" . base64_encode( sha1( $pass . $salt, true) . $salt );
+  
+  $entry['userpassword'] = $hashedpass;
+  ldap_modify($con,"uid=$username,$dn",$entry);
+  if (ldap_error($con) != "Success") {
+      if (ldap_error($con) == "Insufficient access") {
+        header('HTTP/1.1 403 Forbidden');
+        echo '{"error": "Not Permitted"}';
+        exit;
+      } else {
+        header('HTTP/1.1 400 Bad Request');
+        echo '{"error": "Bad Request"}';
+        exit;
+      }
+  } else {
+    $output["password"]=$pass;
+    echo json_encode($output);
+  }
   
 }
 
