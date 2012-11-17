@@ -23,7 +23,7 @@ getRoute()->get('/groups/', 'getGroups'); //works :D
 getRoute()->post('/groups/', 'createGroup');
 getRoute()->get('/groups/(\w+)', 'getGroup'); //works :D 
 getRoute()->put('/groups/(\w+)', 'updateGroup');
-getRoute()->delete('/groups/(\w+)', 'deleteGroup');
+getRoute()->delete('/groups/(\w+)', 'deleteGroup'); //works :D 
 
 //MySql stuff down here...
 getRoute()->get('/newmembers/', 'getNewMembers');
@@ -109,7 +109,11 @@ function deleteUser($username) {
         header('HTTP/1.1 403 Forbidden');
         echo '{"error": "Not Permitted"}';
         exit;
-      }  
+      } else {
+        header('HTTP/1.1 400 Bad Request');
+        echo '{"error": "Bad Request"}';
+        exit;
+      }
   } 
 
   $groups = getGroupsForUser($con, $username);
@@ -162,5 +166,31 @@ function getGroup($groupname) {
   echo json_encode($output); 
 }
 
+
+function deleteGroup($groupname) {
+  global $con, $groupdn;
+  
+  requireAuthentication($con);
+  
+  header('Content-type: application/json');
+  
+  $search = ldap_search($con, $groupdn, "(cn=$groupname)");
+  exitIfNotFound($con, $search);
+  
+  ldap_delete($con,"cn=".$groupname.",".$groupdn);
+  if (ldap_error($con) != "Success") {
+      if (ldap_error($con) == "Insufficient access") {
+        header('HTTP/1.1 403 Forbidden');
+        echo '{"error": "Not Permitted"}';
+        exit;
+      } else {
+        header('HTTP/1.1 400 Bad Request');
+        echo '{"error": "Bad Request"}';
+        exit;
+      }
+  } 
+
+  ircNotify("Group deleted: $groupname");
+}
 
 ?>
