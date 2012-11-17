@@ -116,12 +116,24 @@
     }
   }
   
-  function exitNotFound($con, $search) {
+  function exitIfNotFound($con, $search) {
     if (ldap_count_entries($con, $search) == 0) {
       header('HTTP/1.1 404 Not Found');
       echo '{"error": "Not Found"}';
       exit;
     }
+  }
+  
+  function ircNotify($message) {
+      global $conf;
+      
+      if (false) {
+          $ircmessage = "#gsag"." [GAS] $message";
+          $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+          socket_connect($sock, 'irc.geksoc.org', '5050');
+          socket_write($sock, $ircmessage, strlen($ircmessage));
+          socket_close($sock);
+      }
   }
   
 ?>
