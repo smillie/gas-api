@@ -12,23 +12,25 @@ getRoute()->get('/', 'showEndPoints');
 
 getRoute()->post('/authenticate/(\w+)', 'authenticate'); //works :D
 
-getRoute()->get('/users/', 'getUsers'); //works :D 
-getRoute()->post('/users/', 'createUser');
+getRoute()->get('/users', 'getUsers'); //works :D 
+getRoute()->post('/users', 'createUser'); //works :D 
 getRoute()->get('/users/(\w+)', 'getUser'); //works :D
 getRoute()->put('/users/(\w+)', 'updateUser');
 getRoute()->delete('/users/(\w+)', 'deleteUser'); //works :D
 getRoute()->post('/users/(\w+)/resetpassword', 'resetPassword'); //works :D 
 
-getRoute()->get('/groups/', 'getGroups'); //works :D 
-getRoute()->post('/groups/', 'createGroup');
+getRoute()->get('/groups', 'getGroups'); //works :D 
+getRoute()->post('/groups', 'createGroup');
 getRoute()->get('/groups/(\w+)', 'getGroup'); //works :D 
 getRoute()->put('/groups/(\w+)', 'updateGroup');
+getRoute()->put('/groups/(\w+)/adduser', 'addUserToGroup');
+getRoute()->put('/groups/(\w+)/deleteUser', 'deleteUserFromGroup');
 getRoute()->delete('/groups/(\w+)', 'deleteGroup'); //works :D 
 
 
 //MySql stuff down here...
-getRoute()->get('/newmembers/', 'getNewMembers');
-getRoute()->post('/newmembers/', 'createNewMembers');
+getRoute()->get('/newmembers', 'getNewMembers');
+getRoute()->post('/newmembers', 'createNewMembers');
 getRoute()->get('/newmembers/(\w+)', 'getNewMember');
 getRoute()->put('/newmembers/(\w+)', 'updateNewMember');
 getRoute()->post('/newmembers/(\w+)', 'activateNewMember');
@@ -38,17 +40,16 @@ getRoute()->get('/search/(\w+)', 'search');
 //search as filters on GET /users/ (query strings?)
 
 
-getRoute()->run(); 
-//can this routing stuff be used with basic auth??
+getRoute()->run();
 
 
 function authenticate($username) {
   global $con, $dn;
   
-  $json = json_decode(file_get_contents("php://input"), true);
-  $password = $json['password'];
+  $input = json_decode(file_get_contents("php://input"), true);
+  $password = $input['password'];
   
-  if (ldap_bind($con, "uid=".$username.",".$dn, $password)===false){
+  if (ldap_bind($con, "uid=$username,$dn", $password)===false){
     header('Content-type: application/json');
     header('HTTP/1.1 401 Unauthorized');
   }
@@ -75,6 +76,39 @@ function getUsers() {
   }
   
   echo json_encode($output);
+}
+
+function createUser() {
+  global $con, $dn;
+  
+  requireAuthentication($con);
+  
+  header('Content-type: application/json');
+  
+  $input = json_decode(file_get_contents("php://input"), true);
+  
+  $username = $input['username'];
+  $firstname = $input['firstname'];
+  $lastname = $input['lastname'];
+  $studentnumber = $input['studentnumber'];
+  $email = $input['email'];
+  
+  $search = ldap_search($con, $dn, "(uid=$username)");
+  if (ldap_count_entries($con, $search) != 0) {
+    header('HTTP/1.1 400 Bad Request');
+    echo '{"error": "Already Exists"}';
+    exit;
+  }
+  
+  $created = createLdapUser($con, $username, $firstname, $lastname, $studentnumber, $email);
+  if ($created == true) {
+    echo "{\"success\": \"$username created with password $created\"}";
+  } else {
+    header('HTTP/1.1 400 Bad Request');
+    echo '{"error": "Bad Request"}';
+    exit;
+  }
+  
 }
 
 function getUser($username) {
@@ -157,6 +191,7 @@ function resetPassword($username) {
   } else {
     $output["password"]=$pass;
     echo json_encode($output);
+    //send password notifications
   }
   
 }
@@ -200,7 +235,6 @@ function getGroup($groupname) {
   
   echo json_encode($output); 
 }
-
 
 function deleteGroup($groupname) {
   global $con, $groupdn;
