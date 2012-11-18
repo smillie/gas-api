@@ -1,5 +1,5 @@
 <?php
-error_reporting(0);
+// error_reporting(0);
 include_once './vendor/epiphany/Epi.php';
 include_once './includes/ldap_connect.php';
 include_once './includes/functions.php';
@@ -39,7 +39,7 @@ getRoute()->delete('/groups/(\w+)', array('GroupController','deleteGroup')); //w
 getRoute()->get('/newmembers(/*)', array('NewMemberController','getNewMembers'));
 getRoute()->post('/newmembers(/*)', array('NewMemberController','createNewMembers'));
 getRoute()->get('/newmembers/(\w+)', array('NewMemberController','getNewMember'));
-getRoute()->put('/newmembers/(\w+)', array('NewMemberController','updateNewMember'));
+// getRoute()->put('/newmembers/(\w+)', array('NewMemberController','updateNewMember'));
 getRoute()->post('/newmembers/(\w+)', array('NewMemberController','activateNewMember'));
 
 getRoute()->get('/search/(\w+)', 'search');

@@ -45,6 +45,19 @@
     }
   }
   
+  function requireAdminUser($con) {
+    if (isset($_SERVER['PHP_AUTH_USER'])) {
+      $username = $_SERVER['PHP_AUTH_USER'];
+      if (UserController::isUserInGroup($con, $username, "gsag")) {
+        return true;
+      }
+    }
+    
+    header('HTTP/1.0 403 Forbidden');
+    exit;
+    
+  }
+  
   function exitIfNotFound($con, $search) {
     if (ldap_count_entries($con, $search) == 0) {
       header('HTTP/1.1 404 Not Found');

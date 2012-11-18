@@ -12,6 +12,7 @@ class NewMemberController
     global $con, $dn;
 
     requireAuthentication($con);
+    requireAdminUser($con);
 
     header('Content-type: application/json');
     
