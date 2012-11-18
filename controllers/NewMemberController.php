@@ -85,8 +85,8 @@ class NewMemberController
       $stmt->close();
       
       if (sizeof($users) == 0) {
-        header('HTTP/1.1 $)$ Not Found');
-        echo '{"error":"Not Found"}';
+        header('HTTP/1.1 404 Not Found');
+        echo '{"error": "Not Found"}';
         exit;
       } else {
         echo json_encode($users);
