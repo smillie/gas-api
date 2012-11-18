@@ -43,11 +43,10 @@ class NewMemberController
       $stmt->close();
       echo json_encode($users);
       
-  }
+    }
     else {
       /* Error */
     }
-    
   }
   
   static public function getNewMember($id) {
@@ -91,12 +90,55 @@ class NewMemberController
       } else {
         echo json_encode($users);
       }
-  }
+    }
     else {
       /* Error */
     }
-    
   }
+  
+  static public function createNewMember() {
+    global $con, $dn, $conf;
+    
+    requireAuthentication($con);
+    requireAdminUser($con);
+
+    header('Content-type: application/json');
+
+    $input = json_decode(file_get_contents("php://input"), true);
+    
+    $user = new NewUser();
+    $user -> setName($input['firstname'], $input['lastname']);
+    $user -> setStudentNumber($input['studentnumber']);
+    $user -> setEmail($input['email']);
+    
+    $first = $user -> firstName();
+    $last = $user -> lastName();
+    $email = $user -> email();
+    $stuno = $user -> studentNumber();
+    $uid = $user -> username();
+    if (count($user -> validate()) == 0) {
+      $mysqli = new mysqli($conf['db_host'], $conf['db_user'], $conf['db_pass'], $conf['db_name']);
+      if (mysqli_connect_errno()) {
+        header('HTTP/1.1 500 Internal Server Error');
+        echo '{"error": "Internal Server Error"}';
+        exit;
+      }
+      if ($stmt = $mysqli->prepare("INSERT INTO newusers (firstname, lastname, username, studentnumber, email) values (?, ?, ?, ?, ?)")) {
+        $stmt->bind_param('sssis', $first, $last, $uid, $stuno, $email);
+        $stmt->execute();
+        $stmt->close(); 
+      }
+      else {
+        header('HTTP/1.1 400 Bad Request');
+        echo '{"error": "Bad Request"}';
+        exit;
+      } 
+    } else {
+      header('HTTP/1.1 400 Bad Request');
+      echo '{"error": "Bad Request"}';
+      exit;
+    }
+  } 
   
 }
 ?>

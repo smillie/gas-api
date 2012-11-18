@@ -1,10 +1,11 @@
 <?php
-// error_reporting(0);
+error_reporting(0);
 
 include_once 'config.php';
 include_once './vendor/epiphany/Epi.php';
 include_once './includes/ldap_connect.php';
 include_once './includes/functions.php';
+include_once './classes/newuser.php';
 
 function autoloadControllers($class_name) {
   include './controllers/'.$class_name . '.php';
@@ -39,7 +40,7 @@ getRoute()->delete('/groups/(\w+)', array('GroupController','deleteGroup')); //w
 
 //MySql stuff down here...
 getRoute()->get('/newmembers(/*)', array('NewMemberController','getNewMembers')); //works :D 
-getRoute()->post('/newmembers(/*)', array('NewMemberController','createNewMembers'));
+getRoute()->post('/newmembers(/*)', array('NewMemberController','createNewMember'));
 getRoute()->get('/newmembers/(\w+)', array('NewMemberController','getNewMember')); //works :D 
 // getRoute()->put('/newmembers/(\w+)', array('NewMemberController','updateNewMember'));
 getRoute()->post('/newmembers/(\w+)', array('NewMemberController','activateNewMember'));
