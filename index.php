@@ -36,11 +36,11 @@ getRoute()->delete('/groups/(\w+)', array('GroupController','deleteGroup')); //w
 
 
 //MySql stuff down here...
-getRoute()->get('/newmembers(/*)', 'getNewMembers');
-getRoute()->post('/newmembers(/*)', 'createNewMembers');
-getRoute()->get('/newmembers/(\w+)', 'getNewMember');
-getRoute()->put('/newmembers/(\w+)', 'updateNewMember');
-getRoute()->post('/newmembers/(\w+)', 'activateNewMember');
+getRoute()->get('/newmembers(/*)', array('NewMemberController','getNewMembers'));
+getRoute()->post('/newmembers(/*)', array('NewMemberController','createNewMembers'));
+getRoute()->get('/newmembers/(\w+)', array('NewMemberController','getNewMember'));
+getRoute()->put('/newmembers/(\w+)', array('NewMemberController','updateNewMember'));
+getRoute()->post('/newmembers/(\w+)', array('NewMemberController','activateNewMember'));
 
 getRoute()->get('/search/(\w+)', 'search');
 //seperate user and group search?
