@@ -21,21 +21,7 @@
 
       return array_slice($results, 1);
   }
-  
-  
-  function formatGroupArray($ldap_group, $con) {
-    $group["name"] = $ldap_group["cn"][0];
-    $group["gidnumber"] = $ldap_group["gidnumber"][0];
-    
-    $members = array();
-    foreach (array_slice($ldap_group["memberuid"], 1) as $member) {
-      $members[] = $member;
-    }
-    $group["members"] = $members;
-    
-    return $group;
-  }
-  
+   
   function requireAuthentication($con) {
     if (!isset($_SERVER['PHP_AUTH_USER'])) {
         header('WWW-Authenticate: Basic realm="GAS API"');

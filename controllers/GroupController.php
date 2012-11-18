@@ -15,14 +15,14 @@ class GroupController
     header('Content-type: application/json');
 
     $searchPattern = "(objectclass=posixgroup)";
-    $search = ldap_search($con, $dn, $searchPattern);
+    $search = ldap_search($con, $groupdn, $searchPattern);
     ldap_sort($con, $search, 'cn');
     $results = ldap_get_entries($con, $search);
     exitIfNotFound($con, $search);
 
     $output = array();
     foreach (array_slice($results, 1) as $ldap_group) {
-      $group = formatGroupArray($ldap_group, $con);
+      $group = self::formatGroupArray($ldap_group, $con);
       $output[] = $group;
     }
 
@@ -82,7 +82,7 @@ class GroupController
     $result = ldap_get_entries($con, $search);
     exitIfNotFound($con, $search);
 
-    $output = formatGroupArray($result[0], $con);
+    $output = self::formatGroupArray($result[0], $con);
 
     echo json_encode($output); 
   }
@@ -111,6 +111,19 @@ class GroupController
     } 
 
     ircNotify("Group deleted: $groupname");
+  }
+  
+  static private function formatGroupArray($ldap_group, $con) {
+    $group["name"] = $ldap_group["cn"][0];
+    $group["gidnumber"] = $ldap_group["gidnumber"][0];
+    
+    $members = array();
+    foreach (array_slice($ldap_group["memberuid"], 1) as $member) {
+      $members[] = $member;
+    }
+    $group["members"] = $members;
+    
+    return $group;
   }
   
 }

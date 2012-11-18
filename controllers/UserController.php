@@ -35,7 +35,7 @@ class UserController
 
     $output = array();
     foreach (array_slice($results, 1) as $ldap_user) {
-      $user = UserController::formatUserArray($ldap_user, $con);
+      $user = self::formatUserArray($ldap_user, $con);
       $output[] = $user;
     }
 
@@ -64,7 +64,7 @@ class UserController
       exit;
     }
 
-    $created = UserController::createLdapUser($con, $username, $firstname, $lastname, $studentnumber, $email);
+    $created = self::createLdapUser($con, $username, $firstname, $lastname, $studentnumber, $email);
     if ($created == true) {
       echo "{\"success\": \"$username created with password $created\"}";
     } else {
@@ -87,7 +87,7 @@ class UserController
     $result = ldap_get_entries($con, $search);
     exitIfNotFound($con, $search);
 
-    $output = UserController::formatUserArray($result[0], $con);
+    $output = self::formatUserArray($result[0], $con);
 
     echo json_encode($output);
   }
@@ -115,7 +115,7 @@ class UserController
         }
     } 
 
-    $groups = UserController::getGroupsForUser($con, $username);
+    $groups = self::getGroupsForUser($con, $username);
     foreach ($groups as $g) {
         $attr['memberUid'] = $username;
         ldap_mod_del($con, "cn=" . $g . ",ou=groups,dc=geeksoc,dc=org", $attr);
@@ -135,7 +135,7 @@ class UserController
     $search = ldap_search($con, $dn, "(uid=$username)");
     exitIfNotFound($con, $search);
 
-    $pass = UserController::generatePassword(); 
+    $pass = self::generatePassword(); 
     mt_srand((double)microtime()*1000000);
     $salt = pack("CCCCCCCC", mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand());
     $hashedpass = "{SSHA}" . base64_encode( sha1( $pass . $salt, true) . $salt );
@@ -192,10 +192,10 @@ class UserController
     $uidno += 1;
     
     //compute expiry date
-    $expiry = UserController::computeExpiry(date());
+    $expiry = self::computeExpiry(date());
     
     //generate password
-    $pass = UserController::generatePassword(); 
+    $pass = self::generatePassword(); 
     mt_srand((double)microtime()*1000000);
     $salt = pack("CCCCCCCC", mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand());
     $hashedpass = "{SSHA}" . base64_encode( sha1( $pass . $salt, true) . $salt );
@@ -279,7 +279,7 @@ class UserController
     $user["email"] = $ldap_user["mail"][0];
     $user["title"] = $ldap_user["title"][0];
     $user["studentnumber"] = $ldap_user["studentnumber"][0];
-    $user["status"] = UserController::getStatus($ldap_user["shadowexpire"][0]);
+    $user["status"] = self::getStatus($ldap_user["shadowexpire"][0]);
     $user["expiry"] = toDate($ldap_user["shadowexpire"][0]);
     $user["paid"] = toBoolean($ldap_user["haspaid"][0]);
     $user["notes"] = $ldap_user["notes"][0]; //only populated if allowed to see...
@@ -287,7 +287,7 @@ class UserController
     $user["homedirectory"] = $ldap_user["homedirectory"][0];
     $user["uidnumber"] = $ldap_user["uidnumber"][0];
     $user["gidnumber"] = $ldap_user["gidnumber"][0];
-    $user["groups"] = UserController::getGroupsForUser($con, $user["username"]);
+    $user["groups"] = self::getGroupsForUser($con, $user["username"]);
     
     $sshkeys = array();
     foreach (array_slice($ldap_user["sshpublickey"], 1) as $key) {
@@ -315,7 +315,7 @@ class UserController
   static private function getGroupsForUser($con, $user) {
       $groups = array();
       foreach (getAllGroups($con) as $groupEntry) {
-          if (UserController::isUserInGroup($con, $user, $groupEntry['cn'][0])) {
+          if (self::isUserInGroup($con, $user, $groupEntry['cn'][0])) {
               $groups[] = $groupEntry['cn'][0];
           }
       }
