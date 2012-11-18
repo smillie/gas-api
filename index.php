@@ -1,5 +1,7 @@
 <?php
-// error_reporting(0);
+error_reporting(0);
+
+include_once 'config.php';
 include_once './vendor/epiphany/Epi.php';
 include_once './includes/ldap_connect.php';
 include_once './includes/functions.php';

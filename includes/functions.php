@@ -67,15 +67,24 @@
   }
   
   function ircNotify($message) {
-      global $conf;
-      
-      if (false) {
-          $ircmessage = "#gsag"." [GAS] $message";
-          $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-          socket_connect($sock, 'irc.geksoc.org', '5050');
-          socket_write($sock, $ircmessage, strlen($ircmessage));
-          socket_close($sock);
-      }
+    global $conf;
+    
+    if ($conf['ircNotifications']) {
+      $ircmessage = $conf['ircChannel']." [GAS] $message";
+      $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+      socket_connect($sock, $conf['ircServer'], $conf['ircBotPort']);
+      socket_write($sock, $ircmessage, strlen($ircmessage));
+      socket_close($sock);
+    }
+  }
+  
+  function mailNotify($to, $subject, $message) {
+    global $conf;
+    $from = $conf['mailFrom'];
+    
+    if ($conf['mailNotifications']) {
+      mail($to, $subject, $message, "From: $from");
+    }
   }
   
   function setIfDefined($newvalue, &$array, $key) {

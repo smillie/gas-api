@@ -9,14 +9,14 @@ class NewMemberController
 {
   
   static public function getNewMembers() {
-    global $con, $dn;
+    global $con, $dn, $conf;
 
     requireAuthentication($con);
     requireAdminUser($con);
 
     header('Content-type: application/json');
     
-    $mysqli = new mysqli("localhost", "root", "wibble", "gas-users");
+    $mysqli = new mysqli($conf["db_host"], $conf["db_user"], $conf["db_pass"], $conf["db_name"]);
     if (mysqli_connect_errno()) {
       printf('{"error":"Connect failed: %s"}', mysqli_connect_error());
       exit();
