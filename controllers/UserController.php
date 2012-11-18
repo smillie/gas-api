@@ -85,12 +85,81 @@ class UserController
     $search = ldap_search($con, $dn, "(uid=$username)");
     ldap_sort($con, $search, 'uid');
     $result = ldap_get_entries($con, $search);
-    exitIfNotFound($con, $search);
+    
 
     $output = self::formatUserArray($result[0], $con);
 
     echo json_encode($output);
   }
+
+  static public function updateUser($username) {
+    global $con, $dn;
+
+    requireAuthentication($con);
+
+    header('Content-type: application/json');
+
+    $search = ldap_search($con, $dn, "(uid=$username)");
+    ldap_sort($con, $search, 'uid');
+    // $result = ldap_get_entries($con, $search);
+    exitIfNotFound($con, $search);
+
+    $input = json_decode(file_get_contents("php://input"), true);
+
+    $attrs=array();
+  
+    self::setIfDefined($input["firstname"], $attrs, "givenname");
+    self::setIfDefined($input["lastname"], $attrs, "sn");
+    self::setIfDefined($input["displayname"], $attrs, "cn");
+    self::setIfDefined($input["email"], $attrs, "mail");
+    self::setIfDefined($input["title"], $attrs, "title");
+    self::setIfDefined($input["studentnumber"], $attrs, "studentnumber");
+    //can't set status directly - manipulate expiry date instead...
+    //sort out setting the date...
+    if (isset($input["paid"])) {
+      $attrs["haspaid"] = booleanToLdapBoolean($input["paid"]);
+    }
+    self::setIfDefined($input["loginshell"], $attrs, "loginshell");
+    self::setIfDefined($input["homedirectory"], $attrs, "homedirectory");
+    self::setIfDefined($input["notes"], $attrs, "notes");
+    self::setIfDefined($input["uidnumber"], $attrs, "uidnumber");
+    self::setIfDefined($input["gidnumber"], $attrs, "gidnumber");
+    
+    //groups...
+
+    self::setIfDefined($input["sshkeys"], $attrs, "sshpublickey");
+    
+    var_dump($attrs);
+    
+    // "status": "Active",
+    // "expiry": "2243-10-20",
+
+    // "groups": [
+    // 
+    //     "gsag",
+    //     "members",
+    //     "president"
+    // 
+    // ],
+    
+
+    ldap_modify($con, "uid=$username,$dn", $attrs);
+    if (ldap_error($con) != "Success") {
+        echo ldap_error($con);
+    }
+
+  }
+  
+  static private function setIfDefined($newvalue, &$array, $key) {
+    if (isset($newvalue)) {
+      if ($newvalue == "") {
+          $array[$key] = array();
+      } else {
+        $array[$key] = $newvalue;
+      }
+    }
+  }
+
 
   static public function deleteUser($username) {
     global $con, $dn;

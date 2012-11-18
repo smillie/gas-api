@@ -14,6 +14,14 @@
     }
   }
   
+  function booleanToLdapBoolean($boolean) {
+    if ($boolean) {
+      return "TRUE";
+    } else {
+      return "FALSE";
+    }
+  }
+  
   function getAllGroups($con) {
       $group_search = ldap_search($con, "ou=groups,dc=geeksoc,dc=org", "(objectClass=posixGroup)");
       ldap_sort($con, $group_search, 'cn');
