@@ -1,5 +1,5 @@
 <?php
-error_reporting(0);
+// error_reporting(0);
 
 include_once 'config.php';
 include_once './vendor/epiphany/Epi.php';
@@ -32,17 +32,18 @@ getRoute()->get('/groups(/*)', array('GroupController','getGroups')); //works :D
 getRoute()->post('/groups(/*)', array('GroupController','createGroup')); //works :D 
 getRoute()->get('/groups/(\w+)', array('GroupController','getGroup')); //works :D 
 getRoute()->put('/groups/(\w+)', array('GroupController','updateGroup')); //works :D
-getRoute()->post('/groups/(\w+)/adduser', array('GroupController','addUserToGroup'));//works :D 
+getRoute()->post('/groups/(\w+)/adduser', array('GroupController','addUserToGroup')); //works :D 
 getRoute()->post('/groups/(\w+)/deleteuser', array('GroupController','deleteUserFromGroup'));//works :D 
 getRoute()->delete('/groups/(\w+)', array('GroupController','deleteGroup')); //works :D 
 
 
 //MySql stuff down here...
-getRoute()->get('/newmembers(/*)', array('NewMemberController','getNewMembers'));
+getRoute()->get('/newmembers(/*)', array('NewMemberController','getNewMembers')); //works :D 
 getRoute()->post('/newmembers(/*)', array('NewMemberController','createNewMembers'));
-getRoute()->get('/newmembers/(\w+)', array('NewMemberController','getNewMember'));
+getRoute()->get('/newmembers/(\w+)', array('NewMemberController','getNewMember')); //works :D 
 // getRoute()->put('/newmembers/(\w+)', array('NewMemberController','updateNewMember'));
 getRoute()->post('/newmembers/(\w+)', array('NewMemberController','activateNewMember'));
+getRoute()->delete('/newmembers/(\w+)', array('NewMemberController','deleteNewMember'));
 
 getRoute()->get('/search/(\w+)', 'search');
 //seperate user and group search?
