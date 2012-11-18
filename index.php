@@ -29,9 +29,9 @@ getRoute()->post('/users/(\w+)/changepassword', array('UserController','changePa
 getRoute()->get('/groups(/*)', array('GroupController','getGroups')); //works :D 
 getRoute()->post('/groups(/*)', array('GroupController','createGroup')); //works :D 
 getRoute()->get('/groups/(\w+)', array('GroupController','getGroup')); //works :D 
-getRoute()->put('/groups/(\w+)', array('GroupController','updateGroup'));
-getRoute()->post('/groups/(\w+)/adduser', array('GroupController','addUserToGroup'));
-getRoute()->post('/groups/(\w+)/deleteUser', array('GroupController','deleteUserFromGroup'));
+getRoute()->put('/groups/(\w+)', array('GroupController','updateGroup')); //works :D
+getRoute()->post('/groups/(\w+)/adduser', array('GroupController','addUserToGroup'));//works :D 
+getRoute()->post('/groups/(\w+)/deleteuser', array('GroupController','deleteUserFromGroup'));//works :D 
 getRoute()->delete('/groups/(\w+)', array('GroupController','deleteGroup')); //works :D 
 
 

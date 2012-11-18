@@ -114,6 +114,64 @@ class GroupController
     
     
   }
+  
+  static public function addUserToGroup($groupname) {
+    global $con, $groupdn;
+
+    requireAuthentication($con);
+
+    header('Content-type: application/json');
+
+    $search = ldap_search($con, $groupdn, "(cn=$groupname)");
+    ldap_sort($con, $search, 'cn');
+    exitIfNotFound($con, $search);
+    
+    $input = json_decode(file_get_contents("php://input"), true);
+    $user = $input["user"];
+    $attrs["memberuid"] = $user;
+    
+    if (isset($user)) {
+      ldap_mod_add($con, "cn=$groupname,$groupdn", $attrs);
+      if (ldap_error($con) != "Success") {
+        header('HTTP/1.1 400 Bad Request');
+        echo '{"error": "Bad Request"}';
+        exit;
+      }
+    } else {
+      header('HTTP/1.1 400 Bad Request');
+      echo '{"error": "Bad Request"}';
+      exit;
+    }
+  }
+  
+  static public function deleteUserFromGroup($groupname) {
+    global $con, $groupdn;
+
+    requireAuthentication($con);
+
+    header('Content-type: application/json');
+
+    $search = ldap_search($con, $groupdn, "(cn=$groupname)");
+    ldap_sort($con, $search, 'cn');
+    exitIfNotFound($con, $search);
+    
+    $input = json_decode(file_get_contents("php://input"), true);
+    $user = $input["user"];
+    $attrs["memberuid"] = $user;
+    
+    if (isset($user)) {
+      ldap_mod_del($con, "cn=$groupname,$groupdn", $attrs);
+      if (ldap_error($con) != "Success") {
+        header('HTTP/1.1 400 Bad Request');
+        echo '{"error": "Bad Request"}';
+        exit;
+      }
+    } else {
+      header('HTTP/1.1 400 Bad Request');
+      echo '{"error": "Bad Request"}';
+      exit;
+    }
+  }
 
   static public function deleteGroup($groupname) {
     global $con, $groupdn;
