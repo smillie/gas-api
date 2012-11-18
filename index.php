@@ -1,6 +1,14 @@
 <?php
 error_reporting(0);
 
+/* TODO
+  * finish new user queue stuff
+  * implement and test email + irc notifications
+  * search
+  * tests (can hopefully port some of the GAS ones)
+  * fix compute expiry date
+*/
+
 include_once 'config.php';
 include_once './vendor/epiphany/Epi.php';
 include_once './includes/ldap_connect.php';
@@ -40,7 +48,7 @@ getRoute()->delete('/groups/(\w+)', array('GroupController','deleteGroup')); //w
 
 //MySql stuff down here...
 getRoute()->get('/newmembers(/*)', array('NewMemberController','getNewMembers')); //works :D 
-getRoute()->post('/newmembers(/*)', array('NewMemberController','createNewMember'));
+getRoute()->post('/newmembers(/*)', array('NewMemberController','createNewMember')); //works :D 
 getRoute()->get('/newmembers/(\w+)', array('NewMemberController','getNewMember')); //works :D 
 // getRoute()->put('/newmembers/(\w+)', array('NewMemberController','updateNewMember'));
 getRoute()->post('/newmembers/(\w+)', array('NewMemberController','activateNewMember'));

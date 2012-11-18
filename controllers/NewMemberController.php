@@ -88,7 +88,7 @@ class NewMemberController
         echo '{"error": "Not Found"}';
         exit;
       } else {
-        echo json_encode($users);
+        echo json_encode($users[0]);
       }
     }
     else {
