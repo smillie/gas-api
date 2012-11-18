@@ -85,6 +85,7 @@ class UserController
     $search = ldap_search($con, $dn, "(uid=$username)");
     ldap_sort($con, $search, 'uid');
     $result = ldap_get_entries($con, $search);
+    exitIfNotFound($con, $search);
     
 
     $output = self::formatUserArray($result[0], $con);
