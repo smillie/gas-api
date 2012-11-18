@@ -20,9 +20,11 @@ getRoute()->post('/authenticate/(\w+)', array('UserController', 'authenticate'))
 getRoute()->get('/users(/*)', array('UserController','getUsers')); //works :D 
 getRoute()->post('/users(/*)', array('UserController','createUser')); //works :D 
 getRoute()->get('/users/(\w+)', array('UserController','getUser')); //works :D
-getRoute()->put('/users/(\w+)', array('UserController','updateUser'));
+getRoute()->put('/users/(\w+)', array('UserController','updateUser')); //works :D
 getRoute()->delete('/users/(\w+)', array('UserController','deleteUser')); //works :D
 getRoute()->post('/users/(\w+)/resetpassword', array('UserController','resetPassword')); //works :D 
+getRoute()->post('/users/(\w+)/changepassword', array('UserController','changePassword')); //works :D 
+
 
 getRoute()->get('/groups(/*)', array('GroupController','getGroups')); //works :D 
 getRoute()->post('/groups(/*)', array('GroupController','createGroup')); //works :D 

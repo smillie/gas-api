@@ -101,7 +101,6 @@ class UserController
 
     $search = ldap_search($con, $dn, "(uid=$username)");
     ldap_sort($con, $search, 'uid');
-    // $result = ldap_get_entries($con, $search);
     exitIfNotFound($con, $search);
 
     $input = json_decode(file_get_contents("php://input"), true);
@@ -115,7 +114,10 @@ class UserController
     self::setIfDefined($input["title"], $attrs, "title");
     self::setIfDefined($input["studentnumber"], $attrs, "studentnumber");
     //can't set status directly - manipulate expiry date instead...
-    //sort out setting the date...
+    if (isset($input["expiry"])) {
+      $edate = strtotime($input['expiry']);
+      $attrs['shadowexpire'] = intval($edate/(60*60*24))+1;
+    }
     if (isset($input["paid"])) {
       $attrs["haspaid"] = booleanToLdapBoolean($input["paid"]);
     }
@@ -124,28 +126,14 @@ class UserController
     self::setIfDefined($input["notes"], $attrs, "notes");
     self::setIfDefined($input["uidnumber"], $attrs, "uidnumber");
     self::setIfDefined($input["gidnumber"], $attrs, "gidnumber");
-    
-    //groups...
-
     self::setIfDefined($input["sshkeys"], $attrs, "sshpublickey");
-    
-    var_dump($attrs);
-    
-    // "status": "Active",
-    // "expiry": "2243-10-20",
-
-    // "groups": [
-    // 
-    //     "gsag",
-    //     "members",
-    //     "president"
-    // 
-    // ],
-    
+    //groups... can't do due to insufficient access
 
     ldap_modify($con, "uid=$username,$dn", $attrs);
     if (ldap_error($con) != "Success") {
-        echo ldap_error($con);
+      header('HTTP/1.1 400 Bad Request');
+      echo '{"error": "Bad Request"}';
+      exit;
     }
 
   }
