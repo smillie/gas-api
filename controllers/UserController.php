@@ -107,12 +107,12 @@ class UserController
 
     $attrs=array();
   
-    self::setIfDefined($input["firstname"], $attrs, "givenname");
-    self::setIfDefined($input["lastname"], $attrs, "sn");
-    self::setIfDefined($input["displayname"], $attrs, "cn");
-    self::setIfDefined($input["email"], $attrs, "mail");
-    self::setIfDefined($input["title"], $attrs, "title");
-    self::setIfDefined($input["studentnumber"], $attrs, "studentnumber");
+    setIfDefined($input["firstname"], $attrs, "givenname");
+    setIfDefined($input["lastname"], $attrs, "sn");
+    setIfDefined($input["displayname"], $attrs, "cn");
+    setIfDefined($input["email"], $attrs, "mail");
+    setIfDefined($input["title"], $attrs, "title");
+    setIfDefined($input["studentnumber"], $attrs, "studentnumber");
     //can't set status directly - manipulate expiry date instead...
     if (isset($input["expiry"])) {
       $edate = strtotime($input['expiry']);
@@ -121,12 +121,12 @@ class UserController
     if (isset($input["paid"])) {
       $attrs["haspaid"] = booleanToLdapBoolean($input["paid"]);
     }
-    self::setIfDefined($input["loginshell"], $attrs, "loginshell");
-    self::setIfDefined($input["homedirectory"], $attrs, "homedirectory");
-    self::setIfDefined($input["notes"], $attrs, "notes");
-    self::setIfDefined($input["uidnumber"], $attrs, "uidnumber");
-    self::setIfDefined($input["gidnumber"], $attrs, "gidnumber");
-    self::setIfDefined($input["sshkeys"], $attrs, "sshpublickey");
+    setIfDefined($input["loginshell"], $attrs, "loginshell");
+    setIfDefined($input["homedirectory"], $attrs, "homedirectory");
+    setIfDefined($input["notes"], $attrs, "notes");
+    setIfDefined($input["uidnumber"], $attrs, "uidnumber");
+    setIfDefined($input["gidnumber"], $attrs, "gidnumber");
+    setIfDefined($input["sshkeys"], $attrs, "sshpublickey");
     //groups... can't do due to insufficient access
 
     ldap_modify($con, "uid=$username,$dn", $attrs);
@@ -245,10 +245,6 @@ class UserController
           echo '{"error": "Bad Request"}';
           exit;
         }
-    } else {
-      $output["password"]=$pass;
-      echo json_encode($output);
-      //send password notifications
     }
 
   }
@@ -372,7 +368,7 @@ class UserController
     $user["email"] = $ldap_user["mail"][0];
     $user["title"] = $ldap_user["title"][0];
     $user["studentnumber"] = $ldap_user["studentnumber"][0];
-    $user["status"] = self::getStatus($ldap_user["shadowexpire"][0]);
+    $user["status"] = self::getStatus($ldap_user["shadowexpire"][0], $ldap_user["haspaid"][0]);
     $user["expiry"] = toDate($ldap_user["shadowexpire"][0]);
     $user["paid"] = toBoolean($ldap_user["haspaid"][0]);
     $user["notes"] = $ldap_user["notes"][0]; //only populated if allowed to see...

@@ -87,6 +87,34 @@ class GroupController
     echo json_encode($output); 
   }
 
+  static public function updateGroup($groupname) {
+    global $con, $groupdn;
+
+    requireAuthentication($con);
+
+    header('Content-type: application/json');
+
+    $search = ldap_search($con, $groupdn, "(cn=$groupname)");
+    ldap_sort($con, $search, 'cn');
+    exitIfNotFound($con, $search);
+    
+    $input = json_decode(file_get_contents("php://input"), true);
+
+    $attrs=array();
+    
+    setIfDefined($input["gidnumber"], $attrs, "gidnumber");
+    setIfDefined($input["members"], $attrs, "memberUid");
+    
+    ldap_modify($con, "cn=$groupname,$groupdn", $attrs);
+    if (ldap_error($con) != "Success") {
+      header('HTTP/1.1 400 Bad Request');
+      echo '{"error": "Bad Request"}';
+      exit;
+    }
+    
+    
+  }
+
   static public function deleteGroup($groupname) {
     global $con, $groupdn;
 

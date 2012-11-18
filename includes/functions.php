@@ -65,6 +65,16 @@
       }
   }
   
+  function setIfDefined($newvalue, &$array, $key) {
+    if (isset($newvalue)) {
+      if ($newvalue == "") {
+          $array[$key] = array();
+      } else {
+        $array[$key] = $newvalue;
+      }
+    }
+  }
+  
   
   
   
