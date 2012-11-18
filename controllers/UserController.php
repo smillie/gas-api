@@ -217,6 +217,42 @@ class UserController
 
   }
   
+  static public function changePassword($username) {
+    global $con, $dn;
+
+    requireAuthentication($con);
+
+    header('Content-type: application/json');
+
+    $search = ldap_search($con, $dn, "(uid=$username)");
+    exitIfNotFound($con, $search);
+
+    $input = json_decode(file_get_contents("php://input"), true);
+    $pass = $input['password'];
+    mt_srand((double)microtime()*1000000);
+    $salt = pack("CCCCCCCC", mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand(), mt_rand());
+    $hashedpass = "{SSHA}" . base64_encode( sha1( $pass . $salt, true) . $salt );
+
+    $entry['userpassword'] = $hashedpass;
+    ldap_modify($con,"uid=$username,$dn",$entry);
+    if (ldap_error($con) != "Success") {
+        if (ldap_error($con) == "Insufficient access") {
+          header('HTTP/1.1 403 Forbidden');
+          echo '{"error": "Not Permitted"}';
+          exit;
+        } else {
+          header('HTTP/1.1 400 Bad Request');
+          echo '{"error": "Bad Request"}';
+          exit;
+        }
+    } else {
+      $output["password"]=$pass;
+      echo json_encode($output);
+      //send password notifications
+    }
+
+  }
+  
   static private function generatePassword ($length = 8) {
       $password = "";
       $possible = "2346789bcdfghjkmnpqrtvwxyzBCDFGHJKLMNPQRTVWXYZ";

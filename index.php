@@ -23,7 +23,7 @@ getRoute()->get('/users/(\w+)', array('UserController','getUser')); //works :D
 getRoute()->put('/users/(\w+)', array('UserController','updateUser')); //works :D
 getRoute()->delete('/users/(\w+)', array('UserController','deleteUser')); //works :D
 getRoute()->post('/users/(\w+)/resetpassword', array('UserController','resetPassword')); //works :D 
-getRoute()->post('/users/(\w+)/changepassword', array('UserController','changePassword')); //works :D 
+getRoute()->post('/users/(\w+)/changepassword', array('UserController','changePassword')); //works :D
 
 
 getRoute()->get('/groups(/*)', array('GroupController','getGroups')); //works :D 
