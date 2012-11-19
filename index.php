@@ -52,7 +52,7 @@ getRoute()->post('/newmembers(/*)', array('NewMemberController','createNewMember
 getRoute()->get('/newmembers/(\w+)', array('NewMemberController','getNewMember')); //works :D 
 // getRoute()->put('/newmembers/(\w+)', array('NewMemberController','updateNewMember'));
 getRoute()->post('/newmembers/(\w+)', array('NewMemberController','activateNewMember'));
-getRoute()->delete('/newmembers/(\w+)', array('NewMemberController','deleteNewMember'));
+getRoute()->delete('/newmembers/(\w+)', array('NewMemberController','deleteNewMember')); //works :D
 
 getRoute()->get('/search/(\w+)', 'search');
 //seperate user and group search?
