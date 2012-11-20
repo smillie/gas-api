@@ -2,7 +2,6 @@
 error_reporting(0);
 
 /* TODO
-  * finish new user queue stuff
   * implement and test email + irc notifications
   * search
   * tests (can hopefully port some of the GAS ones)
@@ -51,15 +50,13 @@ getRoute()->get('/newmembers(/*)', array('NewMemberController','getNewMembers'))
 getRoute()->post('/newmembers(/*)', array('NewMemberController','createNewMember')); //works :D 
 getRoute()->get('/newmembers/(\w+)', array('NewMemberController','getNewMember')); //works :D 
 // getRoute()->put('/newmembers/(\w+)', array('NewMemberController','updateNewMember'));
-getRoute()->post('/newmembers/(\w+)', array('NewMemberController','activateNewMember'));
+getRoute()->post('/newmembers/(\w+)', array('NewMemberController','activateNewMember')); //works :D
 getRoute()->delete('/newmembers/(\w+)', array('NewMemberController','deleteNewMember')); //works :D
 
+
 getRoute()->get('/search/(\w+)', 'search');
-//seperate user and group search?
-//search as filters on GET /users/ (query strings?)
 
 
 getRoute()->run();
-
 
 ?>

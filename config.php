@@ -15,6 +15,8 @@ $conf['ircBotPort'] = '5050';
 $conf['mailNotifications'] = FALSE;
 $conf['mailFrom'] = 'support@geeksoc.org';
 
+$conf['notificationPrefix'] = "[TestGAS]";
+
 $conf['ldap_server'] = "ldap://ldap.geeksoc.org";
 $conf['userdn'] = "ou=People,dc=geeksoc,dc=org";
 $conf['groupdn'] = "ou=Groups,dc=geeksoc,dc=org";

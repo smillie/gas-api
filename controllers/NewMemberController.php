@@ -200,5 +200,78 @@ class NewMemberController
       exit;
     }
   }
+
+  static public function activateNewMember($id) {
+    
+    global $con, $dn, $conf;
+
+    requireAuthentication($con);
+    requireAdminUser($con);
+
+    header('Content-type: application/json');
+    
+    $mysqli = new mysqli($conf["db_host"], $conf["db_user"], $conf["db_pass"], $conf["db_name"]);
+    if (mysqli_connect_errno()) {
+      printf('{"error":"Connect failed: %s"}', mysqli_connect_error());
+      exit();
+    }
+    
+    if ($stmt = $mysqli->prepare("SELECT ID, firstname, lastname, username, studentnumber, email FROM newusers WHERE ID = ? AND IS_DELETED = false ORDER BY ID")) {
+
+      $stmt->bind_param('i', $id);
+      $stmt->execute();
+
+      $users = array();
+      $stmt->bind_result($id, $first, $last, $uid, $stuno, $email);
+      while ($stmt->fetch()) {
+        // printf("%s %s %s %i %s\n", $first, $last, $uid, $stuno, $email);
+        $u['id'] = $id;
+        $u['firstname'] = $first;
+        $u['lastname'] = $last;
+        $u['username'] = $uid;
+        $u['studentnumber'] = $stuno;
+        $u['email'] = $email;
+
+        $users[] = $u;
+      }
+      $stmt->close();
+      
+      if (sizeof($users) == 0) {
+        header('HTTP/1.1 404 Not Found');
+        echo '{"error": "Not Found"}';
+        exit;
+      } else {  
+        $returnMessage = UserController::createLdapUser($con, $uid, $first, $last, $stuno, $email);
+        if (isset($returnMessage)) {
+            $success = $returnMessage;
+        } else {
+            header('HTTP/1.1 400 Bad Request');
+            echo '{"error": "Bad Request"}';
+            exit;
+        }
+        
+        if ((!$success==false) && $stmt = $mysqli->prepare("UPDATE newusers SET IS_DELETED=true WHERE id = ?")) {
+        
+              $stmt->bind_param('i', $id);
+        
+              $stmt->execute();
+        
+              $stmt->close(); 
+        } else {
+          header('HTTP/1.1 400 Bad Request');
+          echo '{"error": "Bad Request"}';
+          exit;
+        }
+      }
+    } else {
+      header('HTTP/1.1 400 Bad Request');
+      echo '{"error": "Bad Request"}';
+      exit;
+    }
+  }
+    
+  
+
 }
+
 ?>

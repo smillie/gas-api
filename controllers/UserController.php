@@ -268,7 +268,7 @@ class UserController
       return $password;
   }
   
-  static private function createLdapUser($con, $username, $firstname, $lastname, $studentnumber, $email) {
+  static public function createLdapUser($con, $username, $firstname, $lastname, $studentnumber, $email) {
     
     global $dn;
     
