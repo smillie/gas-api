@@ -2,7 +2,6 @@
 error_reporting(0);
 
 /* TODO
-  * implement and test email + irc notifications
   * tests (can hopefully port some of the GAS ones)
   * fix compute expiry date
 */

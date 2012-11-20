@@ -99,9 +99,6 @@ class NewMemberController
   
   static public function createNewMember() {
     global $con, $dn, $conf;
-    
-    requireAuthentication($con);
-    requireAdminUser($con);
 
     header('Content-type: application/json');
 
@@ -128,6 +125,21 @@ class NewMemberController
         $stmt->bind_param('sssis', $first, $last, $uid, $stuno, $email);
         $stmt->execute();
         $stmt->close(); 
+        
+        ircNotify("$first $last has joined GeekSoc and is awaiting account activation.");
+
+        $adminEmail = <<<EOT
+$first $last has joined GeekSoc. Please verify they have paid then create their account through GAS.
+
+Username: $uid
+First name: $first
+Last name: $last
+Student Number: $stuno
+Email: $email
+
+EOT;
+        mailNotify("gsag@geeksoc.org", "[GeekSoc] New member registered", $adminEmail);
+
       }
       else {
         header('HTTP/1.1 400 Bad Request');

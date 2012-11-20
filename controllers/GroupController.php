@@ -66,7 +66,8 @@ class GroupController
         exit;
     }
 
-    ircNotify("Group created: $groupname");
+    $user = $_SERVER['PHP_AUTH_USER'];
+    ircNotify("Group created: $groupname (by $user)");
 
   }
 
@@ -196,7 +197,8 @@ class GroupController
         }
     } 
 
-    ircNotify("Group deleted: $groupname");
+    $user = $_SERVER['PHP_AUTH_USER'];
+    ircNotify("Group deleted: $groupname (by $user)");
   }
   
   static private function formatGroupArray($ldap_group, $con) {

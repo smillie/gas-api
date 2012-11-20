@@ -162,6 +162,7 @@ class UserController
     echo json_encode($output);
   }
   
+  
   static private function setIfDefined($newvalue, &$array, $key) {
     if (isset($newvalue)) {
       if ($newvalue == "") {
@@ -171,6 +172,7 @@ class UserController
       }
     }
   }
+
 
   static public function deleteUser($username) {
     global $con, $dn;
@@ -201,7 +203,8 @@ class UserController
         ldap_mod_del($con, "cn=" . $g . ",ou=groups,dc=geeksoc,dc=org", $attr);
     }
 
-    ircNotify("Account deleted: $username");
+    $user = $_SERVER['PHP_AUTH_USER'];
+    ircNotify("Account deleted: $username (by $user)");
 
   }
 
@@ -214,6 +217,7 @@ class UserController
 
     $search = ldap_search($con, $dn, "(uid=$username)");
     exitIfNotFound($con, $search);
+    $result = ldap_get_entries($con, $search);
 
     $pass = self::generatePassword(); 
     mt_srand((double)microtime()*1000000);
@@ -235,7 +239,20 @@ class UserController
     } else {
       $output["password"]=$pass;
       echo json_encode($output);
-      //send password notifications
+      $mailmessage = <<<EOT
+Your GeekSoc password has been reset by an administrator.
+
+Username: $username
+New Password: $pass
+
+GeekSoc
+http://www.geeksoc.org/
+EOT;
+
+      mailNotify($result[0]['mail'][0], "[GeekSoc] Your password has been reset", $mailmessage);
+
+      $user = $_SERVER['PHP_AUTH_USER'];
+      ircNotify("Password reset for $username (by $user)");
     }
 
   }
@@ -343,17 +360,50 @@ class UserController
     ldap_add($con,"uid=$username,$dn", $newuser);
     if (ldap_error($con) != "Success") {
         $return = false;
-    }
+    } else {
+          //irc notification
+          $user = $_SERVER['PHP_AUTH_USER'];
+          ircNotify("Account created for $firstname $lastname: Username: $username, Email: $email (by $user)");
+
+          //email user confirmation
+          $userEmail = <<<EOT
+Welcome to GeekSoc $first!
+
+You may find your new account details below, but please change your password at http://accounts.geeksoc.org/ as soon as possible.
+
+Username: $username
+Password: $pass
+
+You may login to the shell server via SSH at shell.geeksoc.org on port 22. IRC may be found at irc.geeksoc.org on port 6667 - #geeksoc is the official channel.
+
+On Windows the program PuTTY may be used to login to the SSH server, while Mac/Linux users will already have SSH installed and may connect using the 'ssh' command from a terminal.
+
+The recommended way of accessing IRC is setting up a persistent connection on Shell using screen and irssi, see http://quadpoint.org/articles/irssi for details on how to set this up.
+
+Have fun, but please be responsible and abide with the terms of service.
+
+GeekSoc
+http://www.geeksoc.org/
+EOT;
+          mailNotify($email, "[GeekSoc] Your account has been created", $userEmail);
+
+          //email creation notice to gsag
+          $adminEmail = <<<EOT
+An account has been created by $user for $first $last:
+
+Username: $uid
+Email: $email
+EOT;
+          mailNotify("gsag@geeksoc.org", "[GeekSoc] New account created", $adminEmail);
+
+        }    
+    
     //adduser to members group
     $newmember['memberUid'] = $username;
     ldap_mod_add($con, "cn=members,ou=groups,dc=geeksoc,dc=org", $newmember);
     if (ldap_error($con) != "Success") {
-        $return = false;
+        // $return = false; -- ignore failure to add to group
     }
-    
-    //irc notification
-    //email user details
-    //email gsag
     
     if (!isset($return)) {
       $return = $pass;

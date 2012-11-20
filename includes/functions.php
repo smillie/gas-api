@@ -70,7 +70,7 @@
     global $conf;
     
     if ($conf['ircNotifications']) {
-      $ircmessage = $conf['ircChannel']." ".$conf['notificationPrefix']." $message";
+      $ircmessage = $conf['ircChannel']." ".$conf['notificationPrefix']." ". $message;
       $sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
       socket_connect($sock, $conf['ircServer'], $conf['ircBotPort']);
       socket_write($sock, $ircmessage, strlen($ircmessage));
@@ -81,10 +81,9 @@
   function mailNotify($to, $subject, $message) {
     global $conf;
     $from = $conf['mailFrom'];
-    $subjPrefix = $conf['notificationPrefix'];
     
     if ($conf['mailNotifications']) {
-      mail($to, $subjPrefix." ".$subject, $message, "From: $from");
+      mail($to, $subject, $message, "From: $from");
     }
   }
   
