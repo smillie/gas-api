@@ -3,7 +3,6 @@ error_reporting(0);
 
 /* TODO
   * implement and test email + irc notifications
-  * search
   * tests (can hopefully port some of the GAS ones)
   * fix compute expiry date
 */
@@ -54,7 +53,7 @@ getRoute()->post('/newmembers/(\w+)', array('NewMemberController','activateNewMe
 getRoute()->delete('/newmembers/(\w+)', array('NewMemberController','deleteNewMember')); //works :D
 
 
-getRoute()->get('/search/(\w+)', 'search');
+getRoute()->get('/search/(\w+)', array('UserController', 'search')); //works :D
 
 
 getRoute()->run();

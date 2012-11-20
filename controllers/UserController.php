@@ -139,6 +139,29 @@ class UserController
 
   }
   
+  static public function search($query) {
+    global $con, $dn;
+
+    requireAuthentication($con);
+
+    header('Content-type: application/json');
+
+    $searchPattern = "(&(objectclass=posixaccount)(|(uid=*$query*)(cn=*$query*)(mail=*$query*)(studentnumber=*$query*)))";
+    
+    $search = ldap_search($con, $dn, $searchPattern);
+    ldap_sort($con, $search, 'uid');
+    $results = ldap_get_entries($con, $search);
+    exitIfNotFound($con, $search);
+
+    $output = array();
+    foreach (array_slice($results, 1) as $ldap_user) {
+      $user = self::formatUserArray($ldap_user, $con);
+      $output[] = $user;
+    }
+
+    echo json_encode($output);
+  }
+  
   static private function setIfDefined($newvalue, &$array, $key) {
     if (isset($newvalue)) {
       if ($newvalue == "") {
@@ -148,7 +171,6 @@ class UserController
       }
     }
   }
-
 
   static public function deleteUser($username) {
     global $con, $dn;
