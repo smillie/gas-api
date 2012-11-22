@@ -1,6 +1,6 @@
 <?php
 
-include_once './includes/ldap_connect.php';
+// include_once './includes/ldap_connect.php';
 
 /**
 * Controller for working with users
@@ -289,7 +289,7 @@ EOT;
 
   }
   
-  static private function generatePassword ($length = 8) {
+  static public function generatePassword ($length = 8) {
       $password = "";
       $possible = "2346789bcdfghjkmnpqrtvwxyzBCDFGHJKLMNPQRTVWXYZ";
       $maxlength = strlen($possible);
@@ -411,7 +411,7 @@ EOT;
     return $return; 
   }
   
-  static private function getStatus($expiry, $paid="TRUE") {
+  static public function getStatus($expiry, $paid="TRUE") {
       $day = intval(time()/(60*60*24));
       $i = (int)$expiry;
       if (!isset($expiry)) $i=99999;
@@ -460,7 +460,7 @@ EOT;
     return $user;
   }
   
-  static private function computeExpiry($date) { //not correct...
+  static public function computeExpiry($date) { //not correct...
 	
     $nextExpiry = strtotime('first Friday of October', $date);
     $threshold = strtotime('last Friday of May', $date);
