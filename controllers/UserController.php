@@ -389,9 +389,9 @@ EOT;
 
           //email creation notice to gsag
           $adminEmail = <<<EOT
-An account has been created by $username for $firstname $lastname:
+An account has been created by $user for $firstname $lastname:
 
-Username: $uid
+Username: $username
 Email: $email
 EOT;
           mailNotify("gsag@geeksoc.org", "[GeekSoc] New account created", $adminEmail);
