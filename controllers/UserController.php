@@ -367,7 +367,7 @@ EOT;
 
           //email user confirmation
           $userEmail = <<<EOT
-Welcome to GeekSoc $first!
+Welcome to GeekSoc $firstname!
 
 You may find your new account details below, but please change your password at http://accounts.geeksoc.org/ as soon as possible.
 
@@ -389,7 +389,7 @@ EOT;
 
           //email creation notice to gsag
           $adminEmail = <<<EOT
-An account has been created by $user for $first $last:
+An account has been created by $username for $firstname $lastname:
 
 Username: $uid
 Email: $email
