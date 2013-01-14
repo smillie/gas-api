@@ -321,7 +321,7 @@ EOT;
     $uidno += 1;
     
     //compute expiry date
-    $expiry = self::computeExpiry(date());
+    $expiry = self::computeExpiry(time());
     
     //generate password
     $pass = self::generatePassword(); 
@@ -460,15 +460,15 @@ EOT;
     return $user;
   }
   
-  static public function computeExpiry($date) { //not correct...
+  static public function computeExpiry($now) {
 	
-    $nextExpiry = strtotime('first Friday of October', $date);
-    $threshold = strtotime('last Friday of May', $date);
+    $nextExpiry = strtotime('first Friday of October', $now);
+    $threshold = strtotime('last Friday of May', $now);
       
-	  if ($date < $threshold) {
+	  if ($now < $threshold) {
 		  $expiry = $nextExpiry;
 	  } else {
-		 $expiry = strtotime('first Friday of October', $date + 365 * 24 * 60 * 60);
+		 $expiry = strtotime('first Friday of October', $now + 365 * 24 * 60 * 60);
 	 }
    $expiry = $expiry/(24 * 60 * 60);
 	 return $expiry;        
