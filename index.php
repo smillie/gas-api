@@ -23,36 +23,36 @@ Epi::init('route');
 
 getRoute()->get('/', 'showEndPoints');
 
-getRoute()->post('/authenticate/(\w+)', array('UserController', 'authenticate')); //works :D
+getRoute()->post('/authenticate/([a-zA-Z0-9\-]+)', array('UserController', 'authenticate')); //works :D
 
 getRoute()->get('/users(/*)', array('UserController','getUsers')); //works :D 
 getRoute()->post('/users(/*)', array('UserController','createUser')); //works :D 
-getRoute()->get('/users/(\w+)', array('UserController','getUser')); //works :D
-getRoute()->put('/users/(\w+)', array('UserController','updateUser')); //works :D
-getRoute()->delete('/users/(\w+)', array('UserController','deleteUser')); //works :D
-getRoute()->post('/users/(\w+)/resetpassword', array('UserController','resetPassword')); //works :D 
-getRoute()->post('/users/(\w+)/changepassword', array('UserController','changePassword')); //works :D
+getRoute()->get('/users/([a-zA-Z0-9\-]+)', array('UserController','getUser')); //works :D
+getRoute()->put('/users/([a-zA-Z0-9\-]+)', array('UserController','updateUser')); //works :D
+getRoute()->delete('/users/([a-zA-Z0-9\-]+)', array('UserController','deleteUser')); //works :D
+getRoute()->post('/users/([a-zA-Z0-9\-]+)/resetpassword', array('UserController','resetPassword')); //works :D 
+getRoute()->post('/users/([a-zA-Z0-9\-]+)/changepassword', array('UserController','changePassword')); //works :D
 
 
 getRoute()->get('/groups(/*)', array('GroupController','getGroups')); //works :D 
 getRoute()->post('/groups(/*)', array('GroupController','createGroup')); //works :D 
-getRoute()->get('/groups/(\w+)', array('GroupController','getGroup')); //works :D 
-getRoute()->put('/groups/(\w+)', array('GroupController','updateGroup')); //works :D
-getRoute()->post('/groups/(\w+)/adduser', array('GroupController','addUserToGroup')); //works :D 
-getRoute()->post('/groups/(\w+)/deleteuser', array('GroupController','deleteUserFromGroup'));//works :D 
-getRoute()->delete('/groups/(\w+)', array('GroupController','deleteGroup')); //works :D 
+getRoute()->get('/groups/([a-zA-Z0-9\-]+)', array('GroupController','getGroup')); //works :D 
+getRoute()->put('/groups/([a-zA-Z0-9\-]+)', array('GroupController','updateGroup')); //works :D
+getRoute()->post('/groups/([a-zA-Z0-9\-]+)/adduser', array('GroupController','addUserToGroup')); //works :D 
+getRoute()->post('/groups/([a-zA-Z0-9\-]+)/deleteuser', array('GroupController','deleteUserFromGroup'));//works :D 
+getRoute()->delete('/groups/([a-zA-Z0-9\-]+)', array('GroupController','deleteGroup')); //works :D 
 
 
 //MySql stuff down here...
 getRoute()->get('/newmembers(/*)', array('NewMemberController','getNewMembers')); //works :D 
 getRoute()->post('/newmembers(/*)', array('NewMemberController','createNewMember')); //works :D 
-getRoute()->get('/newmembers/(\w+)', array('NewMemberController','getNewMember')); //works :D 
-// getRoute()->put('/newmembers/(\w+)', array('NewMemberController','updateNewMember'));
-getRoute()->post('/newmembers/(\w+)', array('NewMemberController','activateNewMember')); //works :D
-getRoute()->delete('/newmembers/(\w+)', array('NewMemberController','deleteNewMember')); //works :D
+getRoute()->get('/newmembers/([a-zA-Z0-9\-]+)', array('NewMemberController','getNewMember')); //works :D 
+// getRoute()->put('/newmembers/([a-zA-Z0-9\-]+)', array('NewMemberController','updateNewMember'));
+getRoute()->post('/newmembers/([a-zA-Z0-9\-]+)', array('NewMemberController','activateNewMember')); //works :D
+getRoute()->delete('/newmembers/([a-zA-Z0-9\-]+)', array('NewMemberController','deleteNewMember')); //works :D
 
 
-getRoute()->get('/search/(\w+)', array('UserController', 'search')); //works :D
+getRoute()->get('/search/([a-zA-Z0-9\-]+)', array('UserController', 'search')); //works :D
 
 
 getRoute()->run();
