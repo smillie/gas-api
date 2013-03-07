@@ -450,6 +450,7 @@ EOT;
     $user["uidnumber"] = $ldap_user["uidnumber"][0];
     $user["gidnumber"] = $ldap_user["gidnumber"][0];
     $user["groups"] = self::getGroupsForUser($con, $user["username"]);
+    $user["isAdmin"] = in_array("gsag", $user["groups"]);
     
     $sshkeys = array();
     foreach (array_slice($ldap_user["sshpublickey"], 1) as $key) {
