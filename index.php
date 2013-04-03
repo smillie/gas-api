@@ -55,6 +55,12 @@ getRoute()->delete('/newmembers/([a-zA-Z0-9\-]+)', array('NewMemberController','
 getRoute()->get('/search/([a-zA-Z0-9\-]+)', array('UserController', 'search')); //works :D
 
 
+//Elections stuff
+getRoute()->get('/elections/positions', array('ElectionController','getPositions'));
+getRoute()->get('/elections/eligibleMembers', array('ElectionController','getEligibleMembers'));
+
+getRoute()->post('/elections/nominate', array('ElectionController','handleNomination'));
+
 getRoute()->run();
 
 ?>
