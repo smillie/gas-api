@@ -336,6 +336,7 @@ EOT;
     $newuser['objectclass'][4] = "posixAccount";
     $newuser['objectclass'][5] = "shadowAccount";
     $newuser['objectclass'][6] = "gsAccount";
+    $newuser['objectclass'][7] = "inetLocalMailRecipient";
     $newuser['cn'] = "$firstname $lastname";
     $newuser['sn'] = $lastname;
     $newuser['givenName'] = $firstname;
