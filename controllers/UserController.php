@@ -381,6 +381,8 @@ On Windows the program PuTTY may be used to login to the SSH server, while Mac/L
 
 The recommended way of accessing IRC is setting up a persistent connection on Shell using screen and irssi, see http://quadpoint.org/articles/irssi for details on how to set this up.
 
+You can access your @geeksoc.org email account at http://webmail.geeksoc.org/ or by setting up your email client to use mail.geeksoc.org.
+
 Have fun, but please be responsible and abide with the terms of service.
 
 GeekSoc
