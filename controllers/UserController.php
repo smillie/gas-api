@@ -336,6 +336,7 @@ EOT;
     $newuser['objectclass'][4] = "posixAccount";
     $newuser['objectclass'][5] = "shadowAccount";
     $newuser['objectclass'][6] = "gsAccount";
+    $newuser['objectclass'][7] = "inetLocalMailRecipient";
     $newuser['cn'] = "$firstname $lastname";
     $newuser['sn'] = $lastname;
     $newuser['givenName'] = $firstname;
@@ -379,6 +380,8 @@ You may login to the shell server via SSH at shell.geeksoc.org on port 22. IRC m
 On Windows the program PuTTY may be used to login to the SSH server, while Mac/Linux users will already have SSH installed and may connect using the 'ssh' command from a terminal.
 
 The recommended way of accessing IRC is setting up a persistent connection on Shell using screen and irssi, see http://quadpoint.org/articles/irssi for details on how to set this up.
+
+You can access your @geeksoc.org email account at http://webmail.geeksoc.org/ or by setting up your email client to use mail.geeksoc.org.
 
 Have fun, but please be responsible and abide with the terms of service.
 
