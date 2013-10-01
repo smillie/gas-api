@@ -72,6 +72,7 @@ class ElectionController
               $nominator = $input['user'];
 
               ircnotify("$nominee has been nominated for $position by $nominator");
+              AuditController::recordAuditEntry("Nominated $nominee for $position");
               
               $adminEmail = <<<EOT
 $nominee has been nominated for $position by $nominator.

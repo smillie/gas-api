@@ -67,6 +67,7 @@ class UserController
     $created = self::createLdapUser($con, $username, $firstname, $lastname, $studentnumber, $email);
     if ($created == true) {
       echo "{\"success\": \"$username created with password $created\"}";
+      AuditController::recordAuditEntry("Created user '$username'");
     } else {
       header('HTTP/1.1 400 Bad Request');
       echo '{"error": "Bad Request"}';
@@ -137,6 +138,8 @@ class UserController
       exit;
     }
 
+    AuditController::recordAuditEntry("Edited account '$username'");
+
   }
   
   static public function search($query) {
@@ -204,6 +207,7 @@ class UserController
     }
 
     $user = $_SERVER['PHP_AUTH_USER'];
+    AuditController::recordAuditEntry("Deleted account '$username'");
     ircNotify("Account deleted: $username (by $user)");
 
   }
@@ -253,6 +257,8 @@ EOT;
 
       $user = $_SERVER['PHP_AUTH_USER'];
       ircNotify("Password reset for $username (by $user)");
+      
+      AuditController::recordAuditEntry("Reset password for '$username'");
     }
 
   }

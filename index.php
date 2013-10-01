@@ -61,6 +61,8 @@ getRoute()->get('/elections/eligibleMembers', array('ElectionController','getEli
 
 getRoute()->post('/elections/nominate', array('ElectionController','handleNomination'));
 
+getRoute()->get('/audit', array('AuditController', 'getLog'));
+
 getRoute()->run();
 
 ?>
