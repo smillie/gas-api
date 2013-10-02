@@ -68,6 +68,7 @@ class GroupController
 
     $user = $_SERVER['PHP_AUTH_USER'];
     ircNotify("Group created: $groupname (by $user)");
+    AuditController::recordAuditEntry("Created group '$groupname'");
 
   }
 
@@ -112,6 +113,7 @@ class GroupController
       echo '{"error": "Bad Request"}';
       exit;
     }
+    AuditController::recordAuditEntry("Edited group '$groupname'");
     
     
   }
@@ -143,6 +145,7 @@ class GroupController
       echo '{"error": "Bad Request"}';
       exit;
     }
+    AuditController::recordAuditEntry("Added user '$user' to group '$groupname'");
   }
   
   static public function deleteUserFromGroup($groupname) {
@@ -172,6 +175,7 @@ class GroupController
       echo '{"error": "Bad Request"}';
       exit;
     }
+    AuditController::recordAuditEntry("Removed user '$user' from group '$groupname'");
   }
 
   static public function deleteGroup($groupname) {
@@ -199,6 +203,7 @@ class GroupController
 
     $user = $_SERVER['PHP_AUTH_USER'];
     ircNotify("Group deleted: $groupname (by $user)");
+    AuditController::recordAuditEntry("Deleted group '$groupname'");
   }
   
   static private function formatGroupArray($ldap_group, $con) {

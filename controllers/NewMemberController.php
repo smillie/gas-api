@@ -211,6 +211,7 @@ EOT;
       echo '{"error": "Bad Request"}';
       exit;
     }
+    AuditController::recordAuditEntry("Removed $first $last from the new members queue");
   }
 
   static public function activateNewMember($id) {
@@ -256,6 +257,7 @@ EOT;
         $returnMessage = UserController::createLdapUser($con, $uid, $first, $last, $stuno, $email);
         if (isset($returnMessage)) {
             $success = $returnMessage;
+            AuditController::recordAuditEntry("Created account '$uid'");
         } else {
             header('HTTP/1.1 400 Bad Request');
             echo '{"error": "Bad Request"}';
