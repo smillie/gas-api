@@ -4,7 +4,11 @@ class AuditController
 {
 
     static public function getLog() {
-        global $conf;
+
+        global $con, $conf;
+
+        requireAuthentication($con);
+        requireAdminUser($con);
 
       $mysqli = new mysqli($conf["db_host"], $conf["db_user"], $conf["db_pass"], $conf["db_name"]);
       if (mysqli_connect_errno()) {
