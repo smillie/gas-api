@@ -16,7 +16,7 @@ class AuditController
         exit();
       }
     
-      if ($stmt = $mysqli->prepare("SELECT timestamp, user, message FROM audit")) {
+      if ($stmt = $mysqli->prepare("SELECT timestamp, user, message FROM audit ORDER BY timestamp DESC LIMIT 100")) {
         $stmt->execute();
 
         $users = array();
