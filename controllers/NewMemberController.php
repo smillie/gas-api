@@ -211,7 +211,7 @@ EOT;
       echo '{"error": "Bad Request"}';
       exit;
     }
-    AuditController::recordAuditEntry("Removed $first $last from the new members queue")
+    AuditController::recordAuditEntry("Removed $first $last from the new members queue");
   }
 
   static public function activateNewMember($id) {
