@@ -167,6 +167,7 @@ class NewUserClassTest extends PHPUnit_Framework_TestCase
 		foreach ($valid as $email)
 		{
 			$this -> instance -> setEmail($email);
+            $this -> assertEquals($email, $this -> instance -> email());
 			$validation = $this -> instance -> validate();
 			$this -> assertNotContains("Invalid email address entered", $validation);
 		}
