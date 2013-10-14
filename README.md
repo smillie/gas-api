@@ -1,3 +1,5 @@
+[![BuildStatus](https://secure.travis-ci.org/GeekSoc/gas-api.png)](http://travis-ci.org/GeekSoc/gas-api)
+
 gas-api
 =======
 
