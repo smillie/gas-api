@@ -29,4 +29,11 @@ class GenerateUsernameTest extends PHPUnit_Framework_TestCase
         $uid = $this -> user -> username();
         $this -> assertEquals($uid, 'jsmith-doe');
     }
+    
+    public function testApostrophes()
+    {
+        $this -> user -> setName('Paddy', 'O'Mally');
+        $uid = $this -> user -> username();
+        $this -> assertEquals($uid, 'pomally');
+    }
 }
