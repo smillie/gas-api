@@ -144,6 +144,7 @@ class NewUser
         // remove whitespace
         $name = preg_replace( '/\s+/', '', $name);
         $name = strtolower($name);
+        $name = preg_replace( '/[^A-Za-z-0-9]/', '', $name);
         return $name;
     }
     
