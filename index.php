@@ -23,7 +23,7 @@ Epi::init('route');
 
 getRoute()->get('/', 'showEndPoints');
 
-getRoute()->post('/authenticate/([a-zA-Z0-9\-]+)', array('UserController', 'authenticate')); //works :D
+getRoute()->post('/authenticate', array('UserController', 'authenticate')); //works :D
 
 getRoute()->get('/users(/*)', array('UserController','getUsers')); //works :D 
 getRoute()->post('/users(/*)', array('UserController','createUser')); //works :D 

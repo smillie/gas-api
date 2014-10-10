@@ -8,10 +8,11 @@
 class UserController
 {
   
-  static public function authenticate($username) {
+  static public function authenticate() {
     global $con, $dn;
 
     $input = json_decode(file_get_contents("php://input"), true);
+		$username = $input['username'];
     $password = $input['password'];
 
     if (ldap_bind($con, "uid=$username,$dn", $password)===false){
